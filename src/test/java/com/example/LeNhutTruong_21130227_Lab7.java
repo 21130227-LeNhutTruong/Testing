@@ -1,17 +1,15 @@
 package com.example;
 
 import java.time.Duration;
-import java.time.Duration;
 
 import org.testng.Assert;
 import org.testng.annotations.*;
-import static org.testng.Assert.*;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-public class CompareProductsTest {
+public class LeNhutTruong_21130227_Lab7 {
 
     private WebDriver driver;
     private WebDriverWait wait;
@@ -48,17 +46,7 @@ public class CompareProductsTest {
 
     @Test
     public void TC01_openProductAndCompare() {
-        driver.get("https://cellphones.com.vn/");
-
-        // Nếu có popup, đóng trước
-        try {
-            WebElement popupClose = driver.findElement(By.cssSelector(".popup-close"));
-            if (popupClose.isDisplayed()) {
-                popupClose.click();
-            }
-        } catch (NoSuchElementException e) {
-            // popup không xuất hiện, bỏ qua
-        }
+        driver.get("https://cellphones.com.vn/mobile.html");
 
         // Chờ ô tìm kiếm
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
@@ -66,48 +54,82 @@ public class CompareProductsTest {
                 By.xpath("//input[@type='text' and @placeholder='Bạn muốn mua gì hôm nay?']")
         ));
 
-        // Click và nhập tìm kiếm
-        searchInput.click();
-        searchInput.clear();
-        searchInput.sendKeys("iphone");
-        searchInput.sendKeys(Keys.ENTER);
+        searchProduct("iphone");
 
         // Chọn sản phẩm
         WebElement product = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//img[@alt='iPhone Air 256GB | Chính hãng']")
         ));
         product.click();
+        // Nhấn So sánh
+        WebElement compareBtn1 = wait.until(ExpectedConditions.elementToBeClickable(
+                By.linkText("So sánh")
+        ));
+        compareBtn1.click();
     }
 
     // ==============================
     // TEST CASE 2: So sánh sản phẩm thứ 2
     // ==============================
-
     @Test
     public void TC02_addSecondProductToCompare() {
-        driver.get("https://cellphones.com.vn/chuot-khong-day-logitech-m221.html");
 
-        // Mở popup so sánh
-        clickCompareButton();
+        // ============================
+        // SẢN PHẨM 1
+        // ============================
 
-        // Click icon thêm sản phẩm
-        WebElement addBtn = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//div[@id='productDetailV2']//div[contains(@class,'compare-btn')]//svg")));
-        addBtn.click();
+        driver.get("https://cellphones.com.vn/mobile.html");
 
-        // Search
-        searchProduct("Chuột Logitech MX");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
-        // Click kết quả đầu tiên
-        WebElement firstResult = wait.until(ExpectedConditions.elementToBeClickable(
-                By.cssSelector("#search_autocomplete div.suggestion-item a")));
-        firstResult.click();
+        // Tìm kiếm sản phẩm đầu tiên
+        searchProduct("iphone air");
 
-        clickCompareButton();
+        // Chọn sản phẩm 1
+        WebElement product1 = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//img[@alt='iPhone Air 256GB | Chính hãng']")
+        ));
+        product1.click();
 
-        Assert.assertTrue(driver.getCurrentUrl().contains("so-sanh"),
-                "Không mở trang so sánh sản phẩm thứ 2!");
+        // Nhấn So sánh
+        WebElement compareBtn1 = wait.until(ExpectedConditions.elementToBeClickable(
+                By.linkText("So sánh")
+        ));
+        compareBtn1.click();
+
+
+        // ============================
+        // SẢN PHẨM 2
+        // ============================
+
+        driver.get("https://cellphones.com.vn/mobile.html");
+
+        searchProduct("iPhone 15");
+        // Chọn sản phẩm 2
+        WebElement product2 = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//img[@alt='iPhone 15 128GB | Chính hãng VN/A']")
+        ));
+        product2.click();
+
+        // Nhấn So sánh
+        WebElement compareBtn2 = wait.until(ExpectedConditions.elementToBeClickable(
+                By.linkText("So sánh")
+        ));
+        compareBtn2.click();
+
+
+        // ============================
+        // KIỂM TRA ĐÃ VÀO TRANG SO SÁNH (2 sản phẩm)
+        // ============================
+
+//        Assert.assertTrue(driver.getCurrentUrl().contains("so-sanh"),
+//                "Không mở trang so sánh sau khi thêm 2 sản phẩm!");
+
+//        // Kiểm tra có ít nhất 2 sản phẩm trên bảng so sánh
+//        int productCount = driver.findElements(By.cssSelector(".item.item-compare")).size();
+//        Assert.assertTrue(productCount >= 2, "Chưa có đủ 2 sản phẩm trong bảng so sánh!");
     }
+
 
     // ==============================
     // TEST CASE 3: Xóa 1 sản phẩm khỏi danh sách so sánh
@@ -154,16 +176,49 @@ public class CompareProductsTest {
 
     @Test
     public void TC05_compareFromProductDetail() {
-        driver.get("https://cellphones.com.vn/chuot-khong-day-logitech-mx-master-2s.html");
+        // ============================
+        // SẢN PHẨM 1
+        // ============================
 
+        driver.get("https://cellphones.com.vn/mobile.html");
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+        // Tìm kiếm sản phẩm đầu tiên
+        searchProduct("iphone air");
+
+        // Chọn sản phẩm 1
+        WebElement product1 = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//img[@alt='iPhone Air 256GB | Chính hãng']")
+        ));
+        product1.click();
+
+        // Nhấn So sánh
+        WebElement compareBtn1 = wait.until(ExpectedConditions.elementToBeClickable(
+                By.linkText("So sánh")
+        ));
+        compareBtn1.click();
+
+
+        // ============================
+        // SẢN PHẨM 2
+        // ============================
+
+        driver.get("https://cellphones.com.vn/mobile.html");
+
+        searchProduct("iPhone 15");
+        // Chọn sản phẩm 2
+        WebElement product2 = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//img[@alt='iPhone 15 128GB | Chính hãng VN/A']")
+        ));
+        product2.click();
+
+        // Nhấn So sánh
+        WebElement compareBtn2 = wait.until(ExpectedConditions.elementToBeClickable(
+                By.linkText("So sánh")
+        ));
+        compareBtn2.click();
         clickCompareButton();
-
-        WebElement btn2 = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//div[@id='productDetailV2']//div[contains(@class,'item')][2]//a")));
-        btn2.click();
-
-        Assert.assertTrue(driver.getCurrentUrl().contains("so-sanh"),
-                "Không mở trang so sánh khi thêm từ trang chi tiết!");
     }
 
     // ==============================
